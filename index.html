@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SLFC 3s Intra Tournament Tracker</title>
     <style>
         :root {
@@ -17,31 +17,59 @@
             --gold-light: #fffde7;
             --danger: #d32f2f;
         }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
+            /* Stamford Bridge Stadium Pitch Background with Dark Contrast Overlay */
+            background-color: #0b2341;
+            background-image: 
+                linear-gradient(rgba(5, 18, 36, 0.45), rgba(5, 18, 36, 0.65)),
+                url('https://www.premierpitches.com/wp-content/uploads/2023/05/banner_service_details-1700x993_c.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 12px;
+            min-height: 100vh;
         }
         h1, h2, h3 { color: var(--primary); margin-top: 0; }
+        .page-title {
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.6);
+            margin-bottom: 4px;
+            font-size: 1.55em;
+        }
+        .page-subtitle {
+            color: #e3f2fd;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+            margin-top: 0;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
         .container {
             max-width: 1300px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 16px;
         }
         @media (min-width: 992px) {
-            .container { grid-template-columns: 1.15fr 0.85fr; }
+            body { padding: 20px; }
+            .container { grid-template-columns: 1.15fr 0.85fr; gap: 20px; }
             .full-width { grid-column: span 2; }
         }
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
         }
         .card-final {
             border: 2px solid var(--gold);
@@ -56,18 +84,17 @@
         }
         input, select {
             width: 100%;
-            padding: 8px 10px;
+            padding: 9px 10px;
             border: 1px solid var(--border);
-            border-radius: 5px;
-            box-sizing: border-box;
+            border-radius: 6px;
             font-size: 0.95em;
         }
         button {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 9px 14px;
-            border-radius: 5px;
+            padding: 10px 14px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.9em;
             font-weight: bold;
@@ -80,11 +107,18 @@
         .btn-gold:hover { background-color: #f57f17; color: #fff; }
         .btn-danger { background-color: var(--danger); width: 100%; }
         .btn-danger:hover { background-color: #9a0007; }
+        .btn-wa { background-color: #25d366; color: white; width: 100%; margin-bottom: 8px; }
+        .btn-wa:hover { background-color: #128c7e; }
+        .btn-share { background-color: #0288d1; color: white; width: 100%; margin-bottom: 8px; }
+        .btn-share:hover { background-color: #01579b; }
+        .btn-admin-share { background-color: #555; color: white; width: 100%; margin-bottom: 8px; }
+        .btn-admin-share:hover { background-color: #333; }
+        
         .btn-sm-del {
             background-color: #eee;
             color: #666;
-            padding: 4px 8px;
-            font-size: 0.75em;
+            padding: 6px 10px;
+            font-size: 0.8em;
             border-radius: 4px;
         }
         .btn-sm-del:hover { background-color: var(--danger); color: #fff; }
@@ -92,24 +126,21 @@
         .btn-arrow {
             background-color: #e0e0e0;
             color: #444;
-            padding: 2px 6px;
-            font-size: 0.7em;
-            border-radius: 3px;
-            line-height: 1;
+            padding: 4px 8px;
+            font-size: 0.75em;
+            border-radius: 4px;
             margin-left: 2px;
             cursor: pointer;
         }
         .btn-arrow:hover { background-color: #bdbdbd; color: #000; }
 
-        /* Team Setup Rows */
         .team-setup-row {
             display: grid;
-            grid-template-columns: 140px 1fr;
+            grid-template-columns: 130px 1fr;
             gap: 8px;
             align-items: center;
         }
 
-        /* Fixture Cards & Drag Styles */
         .fixtures-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -134,16 +165,13 @@
             cursor: grab;
             user-select: none;
             color: #888;
-            font-size: 1.1em;
+            font-size: 1.2em;
             margin-right: 6px;
-            padding: 2px 4px;
-        }
-        .drag-handle:active {
-            cursor: grabbing;
+            padding: 4px;
         }
         .fixture-header {
             font-weight: bold;
-            font-size: 0.8em;
+            font-size: 0.82em;
             color: #666;
             margin-bottom: 8px;
             display: flex;
@@ -152,15 +180,21 @@
         }
         .fixture-match-row {
             display: grid;
-            grid-template-columns: 1fr 50px auto 50px 1fr;
+            grid-template-columns: 1fr 45px auto 45px 1fr;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             text-align: center;
             margin-bottom: 8px;
         }
+        @media (min-width: 600px) {
+            .fixture-match-row {
+                grid-template-columns: 1fr 55px auto 55px 1fr;
+                gap: 8px;
+            }
+        }
         .fixture-match-row span.team-label {
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.88em;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -171,7 +205,18 @@
         .fixture-match-row input {
             text-align: center;
             font-weight: bold;
-            padding: 5px;
+            padding: 6px 2px;
+            font-size: 1em;
+        }
+        .score-pill {
+            background: #e8f5e9;
+            color: #1b5e20;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 1.1em;
+            display: inline-block;
+            border: 1px solid #c8e6c9;
         }
         .champ-banner {
             background: #fff8e1;
@@ -180,25 +225,31 @@
             border-radius: 6px;
             text-align: center;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.05em;
             color: #d84315;
             margin-top: 12px;
         }
 
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 6px;
+            min-width: 480px;
         }
         th, td {
             text-align: left;
-            padding: 9px 6px;
+            padding: 8px 6px;
             border-bottom: 1px solid var(--border);
-            font-size: 0.88em;
+            font-size: 0.85em;
         }
         th {
             background-color: var(--bg);
-            font-size: 0.78em;
+            font-size: 0.76em;
             text-transform: uppercase;
         }
         .help-text { font-size: 0.75em; color: #666; display: block; margin-top: 3px; }
@@ -212,18 +263,90 @@
         }
         .badge-done { background: #c8e6c9; color: #2e7d32; }
         .badge-pending { background: #ffe0b2; color: #e65100; }
+        .badge-sync { 
+            background: rgba(255, 255, 255, 0.95); 
+            color: #0d47a1; 
+            font-size: 0.82em; 
+            font-weight: bold;
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px;
+            margin-top: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
 
-        /* Round-edged flag styling */
+        .roster-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .roster-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.88em;
+        }
+        .roster-team {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 130px;
+        }
+        .roster-players {
+            color: #444;
+            text-align: right;
+            flex-grow: 1;
+            margin-left: 8px;
+        }
+
         .flag-logo-img {
-            width: 22px;
-            height: 16px;
+            width: 20px;
+            height: 14px;
             object-fit: cover;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
             vertical-align: middle;
-            margin-right: 6px;
+            margin-right: 4px;
             display: inline-block;
         }
+
+        .admin-only {
+            display: block;
+        }
+        body.spectator-mode .admin-only {
+            display: none !important;
+        }
+
+        #toast {
+            visibility: hidden;
+            min-width: 240px;
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 12px 16px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 25px;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.4s, fadeout 0.4s 2.6s;
+        }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 25px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 25px; opacity: 1; } to { bottom: 0; opacity: 0; } }
     </style>
 </head>
 <body>
@@ -231,81 +354,114 @@
     <div class="container">
         
         <!-- Header -->
-        <div class="full-width">
-            <h1 style="text-align: center; margin-bottom: 4px;">⚽ SLFC 3s Intra Tournament Tracker</h1>
-            <p style="text-align: center; color: #666; margin-top: 0; font-size: 0.9em;">10 Group Matches + Final Championship Match</p>
+        <div class="full-width" style="text-align: center; margin-bottom: 8px;">
+            <h1 class="page-title">⚽ SLFC 3s Intra Tournament Tracker</h1>
+            <p class="page-subtitle">10 Group Matches + Championship Final</p>
+            <div id="sync-status" class="badge-sync">🟢 Live Dynamic Scores Active (Auto-refreshing)</div>
         </div>
 
-        <!-- LEFT COLUMN: Team Setup & 10 Group Fixtures -->
+        <!-- LEFT COLUMN: Team Setup & Matches -->
         <div>
-            <!-- 1. Team Names & Logos -->
-            <div class="card">
-                <h2>1. Team Setup & National Logos</h2>
-                <div id="team-inputs" style="display: grid; grid-template-columns: 1fr; gap: 10px;"></div>
+            <!-- Share Options Card -->
+            <div class="card" style="border: 1px solid var(--accent); background: #f0f7ff;">
+                <h2 style="color: var(--accent); font-size: 1.1em;">📤 Share Tournament</h2>
+                <span class="help-text" style="margin-bottom: 10px;">Share read-only live scoreboard with players/fans or copy WhatsApp summaries.</span>
+                
+                <button class="btn-share" onclick="copySpectatorLink()">
+                    🔗 Copy Spectator Link (Read-Only Scoreboard)
+                </button>
+                
+                <button class="btn-wa" onclick="copyWhatsAppSummary()">
+                    💬 Copy WhatsApp Scorecard Summary
+                </button>
+                
+                <div class="admin-only">
+                    <button class="btn-admin-share" onclick="copyAdminLink()">
+                        🔑 Copy Referee / Admin Link (Full Edit Access)
+                    </button>
+                </div>
             </div>
 
-            <!-- 2. Fixture Management -->
-            <div class="card">
+            <!-- 1. Team Names & Logos (Admin Only) -->
+            <div class="card admin-only">
+                <h2>1. Team Setup & National Flags</h2>
+                <div id="team-inputs" style="display: grid; grid-template-columns: 1fr; gap: 8px;"></div>
+            </div>
+
+            <!-- 2. Fixture Controls (Admin Only) -->
+            <div class="card admin-only">
                 <h2>2. Fixture Controls</h2>
-                <label>Add Custom Match</label>
+                <label>Add Single Fixture</label>
                 <div class="flex-row form-group">
                     <select id="custom-t1"></select>
                     <b>vs</b>
                     <select id="custom-t2"></select>
-                    <button class="btn-secondary" onclick="addCustomFixture()" style="white-space: nowrap;">+ Add Fixture</button>
+                    <button class="btn-secondary" onclick="addCustomFixture()" style="white-space: nowrap;">+ Add</button>
                 </div>
-                <button onclick="generate10RoundRobinFixtures()" style="width: 100%; margin-top: 5px;">
-                    🔄 Reset & Generate 10 Round-Robin Fixtures
+                <button onclick="resetToCustomSchedule()" style="width: 100%; margin-top: 4px;">
+                    🔄 Reset to Default 10 Match Schedule
                 </button>
             </div>
 
-            <!-- 3. Fixtures List (10 matches) -->
+            <!-- 3. Matches List -->
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <div>
-                        <h2 style="margin-bottom: 2px;">3. Group Matches (<span id="match-count">10</span> Matches)</h2>
-                        <span class="help-text">💡 Drag by <b>⠿</b> or use <b>▲ / ▼</b> to reorder the match sequence</span>
+                        <h2 style="margin-bottom: 2px;">Matches (<span id="match-count">10</span>)</h2>
+                        <span class="help-text admin-only">💡 Tap <b>▲ / ▼</b> or drag <b>⠿</b> to reorder</span>
                     </div>
-                    <span id="played-count" class="badge badge-done">0/10 Completed</span>
+                    <span id="played-count" class="badge badge-done">0/10 Done</span>
                 </div>
                 <div id="fixtures-container" class="fixtures-grid"></div>
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Finals Stage, Standings & Golden Boot -->
+        <!-- RIGHT COLUMN: Finals Stage, Standings, Rosters & Golden Boot -->
         <div>
             
             <!-- FINALS STAGE CARD -->
             <div class="card card-final">
                 <h2 style="color: #d84315;">🥇 Finals Match</h2>
-                <span class="help-text" style="margin-bottom: 10px;">Decide the tournament champion between the top teams.</span>
                 
-                <button class="btn-gold" onclick="autoFillFinalists()" style="width: 100%; margin-bottom: 12px;">
-                    ⚡ Auto-Fill Finalists (1st vs 2nd from Standings)
-                </button>
+                <!-- Admin Final Match Input Form -->
+                <div class="admin-only">
+                    <span class="help-text" style="margin-bottom: 10px;">Championship decider between the top 2 teams.</span>
+                    <button class="btn-gold" onclick="autoFillFinalists()" style="width: 100%; margin-bottom: 12px;">
+                        ⚡ Auto-Fill Finalists (1st vs 2nd in Table)
+                    </button>
 
-                <div class="fixture-match-row">
-                    <select id="final-t1"></select>
-                    <input type="number" id="final-s1" min="0" value="0">
-                    <b>VS</b>
-                    <input type="number" id="final-s2" min="0" value="0">
-                    <select id="final-t2"></select>
+                    <div class="fixture-match-row">
+                        <select id="final-t1"></select>
+                        <input type="number" id="final-s1" min="0" value="0">
+                        <b>VS</b>
+                        <input type="number" id="final-s2" min="0" value="0">
+                        <select id="final-t2"></select>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 8px;">
+                        <label>Finals Goalscorers</label>
+                        <input type="text" id="final-scorers" placeholder="e.g. Selva, Akash, Gautam">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Penalty Shootout / Decider Note</label>
+                        <input type="text" id="final-penalties" placeholder="e.g. Won 3-2 on penalties">
+                    </div>
+
+                    <button onclick="saveFinalsResult()" class="btn-gold" style="width: 100%;">
+                        🏆 Save Final & Crown Champion
+                    </button>
                 </div>
 
-                <div class="form-group" style="margin-top: 8px;">
-                    <label>Finals Goalscorers</label>
-                    <input type="text" id="final-scorers" placeholder="e.g. Player A, Player B, Player A">
-                    <span class="help-text">Comma-separated names for goals scored in the final.</span>
+                <!-- Spectator Final Match Display -->
+                <div id="spectator-final-view" style="display: none; text-align: center; padding: 6px 0;">
+                    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 8px;">
+                        <span id="spec-final-t1" style="font-weight: bold; font-size: 1.05em;"></span>
+                        <span id="spec-final-score" class="score-pill">0 - 0</span>
+                        <span id="spec-final-t2" style="font-weight: bold; font-size: 1.05em;"></span>
+                    </div>
+                    <div id="spec-final-scorers" style="font-size: 0.85em; color: #555; font-style: italic;"></div>
                 </div>
-
-                <div class="form-group">
-                    <label>Penalty Shootout / Decider Note</label>
-                    <input type="text" id="final-penalties" placeholder="e.g. Won 3-2 on penalties">
-                </div>
-
-                <button onclick="saveFinalsResult()" class="btn-gold" style="width: 100%;">
-                    🏆 Save Final & Crown Champion
-                </button>
 
                 <div id="winner-banner" style="display: none;" class="champ-banner"></div>
             </div>
@@ -313,41 +469,51 @@
             <!-- League Standings Table -->
             <div class="card">
                 <h2>Group Standings (Top 2 Qualify)</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>Team</th>
-                            <th>P</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th>GF</th>
-                            <th>GA</th>
-                            <th>GD</th>
-                            <th>Pts</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standings-body"></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>P</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standings-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Team Rosters Card -->
+            <div class="card">
+                <h2>👥 Team Rosters</h2>
+                <div class="roster-list" id="roster-list"></div>
             </div>
 
             <!-- Top Scorers Table -->
             <div class="card">
                 <h2>Top Scorers (Group + Finals)</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Player Name</th>
-                            <th>Total Goals</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scorers-body"></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Player Name</th>
+                                <th>Total Goals</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scorers-body"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Reset Button -->
-            <div class="card">
+            <!-- Reset Button (Admin Only) -->
+            <div class="card admin-only">
                 <button onclick="clearAllData()" class="btn-danger">Reset All Tournament Data</button>
             </div>
 
@@ -355,8 +521,10 @@
 
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast">Message copied!</div>
+
     <script>
-        // National Flags with ISO codes
         const NATIONAL_LOGOS = [
             { code: "gb-eng", name: "England" },
             { code: "cv", name: "Cape Verde" },
@@ -377,14 +545,30 @@
             { code: "in", name: "India" }
         ];
 
-        // Specific Initial Teams
         const DEFAULT_TEAMS = [
-            { name: "England", code: "gb-eng" },
-            { name: "Cape Verde", code: "cv" },
-            { name: "Argentina", code: "ar" },
-            { name: "Spain", code: "es" },
-            { name: "France", code: "fr" }
+            { name: "England", code: "gb-eng", players: ["Gautam", "Anto Gracen", "Shebin"] },
+            { name: "Cape Verde", code: "cv", players: ["Cyril", "Manoj", "Vatsan"] },
+            { name: "Argentina", code: "ar", players: ["Akash", "Roshan", "Mario"] },
+            { name: "Spain", code: "es", players: ["Selva", "Ben", "Prashanth", "Surya"] },
+            { name: "France", code: "fr", players: ["Vinoj", "Naveen", "Nirmal", "Shaaz"] }
         ];
+
+        const ORDERED_PAIRINGS = [
+            { t1: 0, t2: 1 },
+            { t1: 2, t2: 3 },
+            { t1: 4, t2: 0 },
+            { t1: 1, t2: 2 },
+            { t1: 3, t2: 4 },
+            { t1: 0, t2: 2 },
+            { t1: 1, t2: 4 },
+            { t1: 3, t2: 0 },
+            { t1: 2, t2: 4 },
+            { t1: 1, t2: 3 }
+        ];
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSpectator = urlParams.get('view') === 'spectator';
+        const roomId = urlParams.get('room') || 'slfc_3s_main_tourney';
 
         let teams = [...DEFAULT_TEAMS];
         let fixtures = [];
@@ -399,71 +583,133 @@
             winner: ""
         };
         let currentStandings = [];
+        let currentScorers = {};
         let draggedIndex = null;
+        let lastUpdatedTimestamp = 0;
+        let isSyncing = false;
 
-        // Helper to generate round-edged flag <img> tag
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            toast.innerText = text;
+            toast.className = 'show';
+            setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 2800);
+        }
+
         function getFlagImgTag(code) {
             return `<img src="https://flagcdn.com/w40/${code}.png" class="flag-logo-img" alt="${code}" loading="lazy">`;
         }
 
-        // Helper for full HTML display
         function getTeamDisplayHTML(index) {
             if (!teams[index]) return `Team ${index + 1}`;
             return `${getFlagImgTag(teams[index].code)}<span>${teams[index].name}</span>`;
         }
 
-        // Load & Save Data
-        function loadData() {
-            const savedTeams = localStorage.getItem('slfc_teams_dnd');
-            const savedFixtures = localStorage.getItem('slfc_fixtures_dnd');
-            const savedFinal = localStorage.getItem('slfc_final_dnd');
-            
+        // ==================== DYNAMIC CLOUD SYNC ==================== //
+
+        async function pushCloudUpdate() {
+            if (isSpectator) return;
+            lastUpdatedTimestamp = Date.now();
+            const payload = {
+                teams,
+                fixtures,
+                finalMatch,
+                updatedAt: lastUpdatedTimestamp
+            };
+
+            localStorage.setItem('slfc_order_teams', JSON.stringify(teams));
+            localStorage.setItem('slfc_order_fixtures', JSON.stringify(fixtures));
+            localStorage.setItem('slfc_order_final', JSON.stringify(finalMatch));
+            localStorage.setItem('slfc_updated_at', lastUpdatedTimestamp.toString());
+
+            try {
+                await fetch(`https://kvdb.io/8xK5ZtH1yM6yYxMvW249z5/${roomId}`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } catch (e) {
+                console.log("Offline mode. Saved locally.");
+            }
+        }
+
+        async function fetchCloudUpdate() {
+            if (isSyncing) return;
+            try {
+                const res = await fetch(`https://kvdb.io/8xK5ZtH1yM6yYxMvW249z5/${roomId}`, { cache: "no-store" });
+                if (!res.ok) return;
+                const cloudData = await res.json();
+
+                if (cloudData && cloudData.updatedAt && cloudData.updatedAt > lastUpdatedTimestamp) {
+                    isSyncing = true;
+                    lastUpdatedTimestamp = cloudData.updatedAt;
+                    teams = cloudData.teams || teams;
+                    fixtures = cloudData.fixtures || fixtures;
+                    finalMatch = cloudData.finalMatch || finalMatch;
+
+                    localStorage.setItem('slfc_order_teams', JSON.stringify(teams));
+                    localStorage.setItem('slfc_order_fixtures', JSON.stringify(fixtures));
+                    localStorage.setItem('slfc_order_final', JSON.stringify(finalMatch));
+
+                    renderTeamInputs();
+                    updateDropdownOptions();
+                    renderFixtures();
+                    renderFinalCardState();
+                    renderRosters();
+                    calculateStats();
+                    isSyncing = false;
+                }
+            } catch (e) {}
+        }
+
+        function loadInitialData() {
+            if (isSpectator) {
+                document.body.classList.add('spectator-mode');
+            }
+
+            const savedTeams = localStorage.getItem('slfc_order_teams');
+            const savedFixtures = localStorage.getItem('slfc_order_fixtures');
+            const savedFinal = localStorage.getItem('slfc_order_final');
+            const savedTimestamp = localStorage.getItem('slfc_updated_at');
+
+            if (savedTimestamp) lastUpdatedTimestamp = parseInt(savedTimestamp, 10);
+
             if (savedTeams) {
-                teams = JSON.parse(savedTeams);
+                const parsed = JSON.parse(savedTeams);
+                teams = parsed.map((t, idx) => ({
+                    ...t,
+                    players: t.players || (DEFAULT_TEAMS[idx] ? DEFAULT_TEAMS[idx].players : [])
+                }));
             } else {
                 teams = [...DEFAULT_TEAMS];
             }
 
-            if (savedFixtures) {
-                fixtures = JSON.parse(savedFixtures);
-            } else {
-                generateDefault10Fixtures();
-            }
+            if (savedFixtures) fixtures = JSON.parse(savedFixtures);
+            else generateCustom10Fixtures();
 
             if (savedFinal) finalMatch = JSON.parse(savedFinal);
+
+            fetchCloudUpdate();
+            setInterval(fetchCloudUpdate, 3500);
         }
 
-        function saveData() {
-            localStorage.setItem('slfc_teams_dnd', JSON.stringify(teams));
-            localStorage.setItem('slfc_fixtures_dnd', JSON.stringify(fixtures));
-            localStorage.setItem('slfc_final_dnd', JSON.stringify(finalMatch));
+        function generateCustom10Fixtures() {
+            fixtures = ORDERED_PAIRINGS.map((pair, idx) => ({
+                id: idx + 1,
+                t1: pair.t1,
+                t2: pair.t2,
+                s1: 0,
+                s2: 0,
+                scorersText: "",
+                played: false
+            }));
         }
 
-        // Generate 10 round-robin matches
-        function generateDefault10Fixtures() {
-            fixtures = [];
-            let matchId = 1;
-            for (let i = 0; i < teams.length; i++) {
-                for (let j = i + 1; j < teams.length; j++) {
-                    fixtures.push({
-                        id: matchId++,
-                        t1: i,
-                        t2: j,
-                        s1: 0,
-                        s2: 0,
-                        scorersText: "",
-                        played: false
-                    });
-                }
-            }
-        }
-
-        function generate10RoundRobinFixtures() {
+        function resetToCustomSchedule() {
             if (fixtures.some(f => f.played)) {
-                if (!confirm("This will reset all group stage match scores. Continue?")) return;
+                if (!confirm("This will reset all group stage scores to zero and restore the default match order. Continue?")) return;
             }
-            generateDefault10Fixtures();
-            saveData();
+            generateCustom10Fixtures();
+            pushCloudUpdate();
             renderFixtures();
             calculateStats();
         }
@@ -472,10 +718,7 @@
             const t1 = parseInt(document.getElementById('custom-t1').value, 10);
             const t2 = parseInt(document.getElementById('custom-t2').value, 10);
 
-            if (t1 === t2) {
-                alert("A team cannot play against itself.");
-                return;
-            }
+            if (t1 === t2) return alert("A team cannot play against itself.");
 
             fixtures.push({
                 id: fixtures.length + 1,
@@ -487,7 +730,7 @@
                 played: false
             });
 
-            saveData();
+            pushCloudUpdate();
             renderFixtures();
             calculateStats();
         }
@@ -495,7 +738,7 @@
         function deleteFixture(index) {
             fixtures.splice(index, 1);
             fixtures.forEach((f, idx) => f.id = idx + 1);
-            saveData();
+            pushCloudUpdate();
             renderFixtures();
             calculateStats();
         }
@@ -503,38 +746,35 @@
         function moveFixture(index, delta) {
             const newIndex = index + delta;
             if (newIndex < 0 || newIndex >= fixtures.length) return;
-            
             const item = fixtures.splice(index, 1)[0];
             fixtures.splice(newIndex, 0, item);
             fixtures.forEach((f, idx) => f.id = idx + 1);
-            saveData();
+            pushCloudUpdate();
             renderFixtures();
         }
 
-        // Initialize UI
         function initUI() {
             renderTeamInputs();
             updateDropdownOptions();
             renderFixtures();
             renderFinalCardState();
+            renderRosters();
             calculateStats();
         }
 
         function renderTeamInputs() {
             const div = document.getElementById('team-inputs');
+            if (!div) return;
             div.innerHTML = '';
             teams.forEach((t, i) => {
                 const row = document.createElement('div');
                 row.className = 'team-setup-row form-group';
-                
                 let logoOptions = NATIONAL_LOGOS.map(opt => 
                     `<option value="${opt.code}" ${t.code === opt.code ? 'selected' : ''}>${opt.name}</option>`
                 ).join('');
 
                 row.innerHTML = `
-                    <select onchange="updateTeamLogo(${i}, this.value)">
-                        ${logoOptions}
-                    </select>
+                    <select onchange="updateTeamLogo(${i}, this.value)">${logoOptions}</select>
                     <input type="text" value="${t.name}" onchange="updateTeamName(${i}, this.value)" placeholder="Team Name">
                 `;
                 div.appendChild(row);
@@ -543,19 +783,21 @@
 
         function updateTeamName(index, val) {
             teams[index].name = val.trim() || `Team ${index + 1}`;
-            saveData();
+            pushCloudUpdate();
             updateDropdownOptions();
             renderFixtures();
             renderFinalCardState();
+            renderRosters();
             calculateStats();
         }
 
         function updateTeamLogo(index, codeVal) {
             teams[index].code = codeVal;
-            saveData();
+            pushCloudUpdate();
             updateDropdownOptions();
             renderFixtures();
             renderFinalCardState();
+            renderRosters();
             calculateStats();
         }
 
@@ -563,6 +805,7 @@
             const selects = ['custom-t1', 'custom-t2', 'final-t1', 'final-t2'];
             selects.forEach(id => {
                 const el = document.getElementById(id);
+                if (!el) return;
                 const currentVal = el.value;
                 el.innerHTML = '';
                 teams.forEach((team, index) => {
@@ -570,9 +813,25 @@
                 });
                 if (currentVal !== "") el.value = currentVal;
             });
-            if (document.getElementById('custom-t2').value === document.getElementById('custom-t1').value && teams.length > 1) {
-                document.getElementById('custom-t2').value = 1;
+            const customT2 = document.getElementById('custom-t2');
+            const customT1 = document.getElementById('custom-t1');
+            if (customT1 && customT2 && customT2.value === customT1.value && teams.length > 1) {
+                customT2.value = 1;
             }
+        }
+
+        function renderRosters() {
+            const container = document.getElementById('roster-list');
+            container.innerHTML = '';
+            teams.forEach(team => {
+                const playersText = team.players && team.players.length ? team.players.join(', ') : 'No roster set';
+                container.innerHTML += `
+                    <div class="roster-item">
+                        <div class="roster-team">${getFlagImgTag(team.code)} ${team.name}</div>
+                        <div class="roster-players">${playersText}</div>
+                    </div>
+                `;
+            });
         }
 
         function renderFixtures() {
@@ -581,83 +840,90 @@
 
             document.getElementById('match-count').innerText = fixtures.length;
             const completedCount = fixtures.filter(f => f.played).length;
-            document.getElementById('played-count').innerText = `${completedCount}/${fixtures.length} Completed`;
-
-            if (fixtures.length === 0) {
-                container.innerHTML = `<p style="color:#888; text-align:center;">No fixtures scheduled.</p>`;
-                return;
-            }
+            document.getElementById('played-count').innerText = `${completedCount}/${fixtures.length} Done`;
 
             fixtures.forEach((f, idx) => {
                 const card = document.createElement('div');
                 card.className = 'fixture-card';
-                card.draggable = true;
-                card.dataset.index = idx;
 
-                card.addEventListener('dragstart', (e) => {
-                    draggedIndex = idx;
-                    card.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', idx);
-                });
+                if (!isSpectator) {
+                    card.draggable = true;
+                    card.dataset.index = idx;
 
-                card.addEventListener('dragend', () => {
-                    card.classList.remove('dragging');
-                    document.querySelectorAll('.fixture-card').forEach(c => c.classList.remove('drag-over'));
-                });
+                    card.addEventListener('dragstart', (e) => {
+                        draggedIndex = idx;
+                        card.classList.add('dragging');
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('text/plain', idx);
+                    });
+                    card.addEventListener('dragend', () => {
+                        card.classList.remove('dragging');
+                        document.querySelectorAll('.fixture-card').forEach(c => c.classList.remove('drag-over'));
+                    });
+                    card.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        card.classList.add('drag-over');
+                    });
+                    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+                    card.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        card.classList.remove('drag-over');
+                        if (draggedIndex !== null && draggedIndex !== idx) {
+                            const movedItem = fixtures.splice(draggedIndex, 1)[0];
+                            fixtures.splice(idx, 0, movedItem);
+                            fixtures.forEach((item, index) => item.id = index + 1);
+                            pushCloudUpdate();
+                            renderFixtures();
+                        }
+                    });
+                }
 
-                card.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'move';
-                    card.classList.add('drag-over');
-                });
-
-                card.addEventListener('dragleave', () => {
-                    card.classList.remove('drag-over');
-                });
-
-                card.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    card.classList.remove('drag-over');
-                    const targetIndex = idx;
-                    if (draggedIndex !== null && draggedIndex !== targetIndex) {
-                        const movedItem = fixtures.splice(draggedIndex, 1)[0];
-                        fixtures.splice(targetIndex, 0, movedItem);
-                        fixtures.forEach((item, index) => item.id = index + 1);
-                        saveData();
-                        renderFixtures();
-                    }
-                });
-
-                card.innerHTML = `
-                    <div class="fixture-header">
-                        <div style="display: flex; align-items: center;">
-                            <span class="drag-handle" title="Drag to reorder">⠿</span>
+                if (isSpectator) {
+                    card.innerHTML = `
+                        <div class="fixture-header">
                             <span>Match #${f.id} of ${fixtures.length}</span>
-                            <button class="btn-arrow" onclick="moveFixture(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''} title="Move Up">▲</button>
-                            <button class="btn-arrow" onclick="moveFixture(${idx}, 1)" ${idx === fixtures.length - 1 ? 'disabled style="opacity:0.3"' : ''} title="Move Down">▼</button>
-                        </div>
-                        <div>
-                            <span class="badge ${f.played ? 'badge-done' : 'badge-pending'}" style="margin-right: 6px;">
-                                ${f.played ? 'Completed' : 'Pending'}
+                            <span class="badge ${f.played ? 'badge-done' : 'badge-pending'}">
+                                ${f.played ? 'Full Time' : 'Upcoming'}
                             </span>
-                            <button class="btn-sm-del" onclick="deleteFixture(${idx})">✕</button>
                         </div>
-                    </div>
-                    <div class="fixture-match-row">
-                        <span class="team-label" title="${teams[f.t1].name}">${getTeamDisplayHTML(f.t1)}</span>
-                        <input type="number" id="s1_${idx}" min="0" value="${f.s1}">
-                        <b>VS</b>
-                        <input type="number" id="s2_${idx}" min="0" value="${f.s2}">
-                        <span class="team-label" title="${teams[f.t2].name}">${getTeamDisplayHTML(f.t2)}</span>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 6px;">
-                        <input type="text" id="sc_${idx}" value="${f.scorersText || ''}" placeholder="Goalscorers: e.g. Harry Kane, Ryan Mendes">
-                    </div>
-                    <button onclick="saveFixtureResult(${idx})" style="width:100%; padding: 6px; font-size: 0.85em;">
-                        ${f.played ? 'Update Score' : 'Save Score'}
-                    </button>
-                `;
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+                            <span class="team-label" style="font-size: 0.95em; font-weight: bold;">${getTeamDisplayHTML(f.t1)}</span>
+                            <span class="score-pill">${f.played ? `${f.s1} - ${f.s2}` : 'vs'}</span>
+                            <span class="team-label" style="font-size: 0.95em; font-weight: bold;">${getTeamDisplayHTML(f.t2)}</span>
+                        </div>
+                        ${f.scorersText ? `<div style="font-size: 0.8em; color: #666; margin-top: 6px; font-style: italic; text-align: center;">⚽ Goals: ${f.scorersText}</div>` : ''}
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="fixture-header">
+                            <div style="display: flex; align-items: center;">
+                                <span class="drag-handle" title="Drag to reorder">⠿</span>
+                                <span>Match #${f.id} of ${fixtures.length}</span>
+                                <button class="btn-arrow" onclick="moveFixture(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>▲</button>
+                                <button class="btn-arrow" onclick="moveFixture(${idx}, 1)" ${idx === fixtures.length - 1 ? 'disabled style="opacity:0.3"' : ''}>▼</button>
+                            </div>
+                            <div>
+                                <span class="badge ${f.played ? 'badge-done' : 'badge-pending'}" style="margin-right: 6px;">
+                                    ${f.played ? 'Completed' : 'Pending'}
+                                </span>
+                                <button class="btn-sm-del" onclick="deleteFixture(${idx})">✕</button>
+                            </div>
+                        </div>
+                        <div class="fixture-match-row">
+                            <span class="team-label" title="${teams[f.t1].name}">${getTeamDisplayHTML(f.t1)}</span>
+                            <input type="number" id="s1_${idx}" min="0" value="${f.s1}">
+                            <b>VS</b>
+                            <input type="number" id="s2_${idx}" min="0" value="${f.s2}">
+                            <span class="team-label" title="${teams[f.t2].name}">${getTeamDisplayHTML(f.t2)}</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 6px;">
+                            <input type="text" id="sc_${idx}" value="${f.scorersText || ''}" placeholder="Goalscorers: e.g. Selva, Akash, Gautam">
+                        </div>
+                        <button onclick="saveFixtureResult(${idx})" style="width:100%; padding: 7px; font-size: 0.85em;">
+                            ${f.played ? 'Update Score' : 'Save Score'}
+                        </button>
+                    `;
+                }
                 container.appendChild(card);
             });
         }
@@ -668,19 +934,32 @@
             fixtures[idx].scorersText = document.getElementById(`sc_${idx}`).value;
             fixtures[idx].played = true;
 
-            saveData();
+            pushCloudUpdate();
             renderFixtures();
             calculateStats();
+            showToast("Match result saved & broadcasted live!");
         }
 
-        // Finals Handler
         function renderFinalCardState() {
-            document.getElementById('final-t1').value = finalMatch.t1;
-            document.getElementById('final-t2').value = finalMatch.t2;
-            document.getElementById('final-s1').value = finalMatch.s1;
-            document.getElementById('final-s2').value = finalMatch.s2;
-            document.getElementById('final-scorers').value = finalMatch.scorersText || "";
-            document.getElementById('final-penalties').value = finalMatch.note || "";
+            if (!isSpectator) {
+                const fT1 = document.getElementById('final-t1');
+                const fT2 = document.getElementById('final-t2');
+                if (fT1) fT1.value = finalMatch.t1;
+                if (fT2) fT2.value = finalMatch.t2;
+                document.getElementById('final-s1').value = finalMatch.s1;
+                document.getElementById('final-s2').value = finalMatch.s2;
+                document.getElementById('final-scorers').value = finalMatch.scorersText || "";
+                document.getElementById('final-penalties').value = finalMatch.note || "";
+            } else {
+                const specFinal = document.getElementById('spectator-final-view');
+                if (specFinal) {
+                    specFinal.style.display = 'block';
+                    document.getElementById('spec-final-t1').innerHTML = getTeamDisplayHTML(finalMatch.t1);
+                    document.getElementById('spec-final-t2').innerHTML = getTeamDisplayHTML(finalMatch.t2);
+                    document.getElementById('spec-final-score').innerText = finalMatch.played ? `${finalMatch.s1} - ${finalMatch.s2}` : 'vs';
+                    document.getElementById('spec-final-scorers').innerText = finalMatch.scorersText ? `Goals: ${finalMatch.scorersText}` : '';
+                }
+            }
 
             const banner = document.getElementById('winner-banner');
             if (finalMatch.played && finalMatch.winner) {
@@ -705,17 +984,9 @@
             const sc = document.getElementById('final-scorers').value;
             const note = document.getElementById('final-penalties').value;
 
-            if (t1 === t2) {
-                alert("Finalists cannot be the same team.");
-                return;
-            }
+            if (t1 === t2) return alert("Finalists cannot be the same team.");
 
-            let winner = "";
-            if (s1 > s2) winner = teams[t1].name;
-            else if (s2 > s1) winner = teams[t2].name;
-            else {
-                winner = prompt("Draw in finals! Enter the winning team name:", teams[t1].name) || teams[t1].name;
-            }
+            let winner = s1 > s2 ? teams[t1].name : (s2 > s1 ? teams[t2].name : (prompt("Draw in finals! Enter the winning team name:", teams[t1].name) || teams[t1].name));
 
             finalMatch = {
                 t1: t1,
@@ -728,21 +999,19 @@
                 winner: winner
             };
 
-            saveData();
+            pushCloudUpdate();
             renderFinalCardState();
             calculateStats();
+            showToast("Final results saved & crowned!");
         }
 
-        // Stats Calculation
         function calculateStats() {
             let stats = teams.map((team, index) => ({
                 id: index, name: team.name, code: team.code,
                 p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0
             }));
-            
             let scorers = {};
 
-            // Group Matches
             fixtures.forEach(m => {
                 if (!m.played) return;
                 let team1 = stats[m.t1];
@@ -752,16 +1021,9 @@
                 team1.gf += m.s1; team2.gf += m.s2;
                 team1.ga += m.s2; team2.ga += m.s1;
 
-                if (m.s1 > m.s2) {
-                    team1.w++; team1.pts += 3;
-                    team2.l++;
-                } else if (m.s1 < m.s2) {
-                    team2.w++; team2.pts += 3;
-                    team1.l++;
-                } else {
-                    team1.d++; team1.pts += 1;
-                    team2.d++; team2.pts += 1;
-                }
+                if (m.s1 > m.s2) { team1.w++; team1.pts += 3; team2.l++; }
+                else if (m.s1 < m.s2) { team2.w++; team2.pts += 3; team1.l++; }
+                else { team1.d++; team1.pts += 1; team2.d++; team2.pts += 1; }
 
                 team1.gd = team1.gf - team1.ga;
                 team2.gd = team2.gf - team2.ga;
@@ -769,19 +1031,12 @@
                 extractScorers(m.scorersText, scorers);
             });
 
-            // Finals Scorers
-            if (finalMatch.played) {
-                extractScorers(finalMatch.scorersText, scorers);
-            }
+            if (finalMatch.played) extractScorers(finalMatch.scorersText, scorers);
 
-            // Standings Sorting
-            stats.sort((a, b) => {
-                if (b.pts !== a.pts) return b.pts - a.pts;
-                if (b.gd !== a.gd) return b.gd - a.gd;
-                return b.gf - a.gf;
-            });
+            stats.sort((a, b) => b.pts !== a.pts ? b.pts - a.pts : (b.gd !== a.gd ? b.gd - a.gd : b.gf - a.gf));
 
             currentStandings = stats;
+            currentScorers = scorers;
 
             renderStandings(stats);
             renderScorers(scorers);
@@ -804,14 +1059,9 @@
                 tbody.innerHTML += `
                     <tr style="${isFinalist ? 'background-color: #f1f8e9; font-weight: 600;' : ''}">
                         <td><b>${i + 1}</b></td>
-                        <td>${getFlagImgTag(team.code)} ${team.name} ${isFinalist ? '⭐ (Finals)' : ''}</td>
-                        <td>${team.p}</td>
-                        <td>${team.w}</td>
-                        <td>${team.d}</td>
-                        <td>${team.l}</td>
-                        <td>${team.gf}</td>
-                        <td>${team.ga}</td>
-                        <td>${team.gd > 0 ? '+'+team.gd : team.gd}</td>
+                        <td>${getFlagImgTag(team.code)} ${team.name} ${isFinalist ? '⭐' : ''}</td>
+                        <td>${team.p}</td><td>${team.w}</td><td>${team.d}</td><td>${team.l}</td>
+                        <td>${team.gf}</td><td>${team.ga}</td><td>${team.gd > 0 ? '+'+team.gd : team.gd}</td>
                         <td><b>${team.pts}</b></td>
                     </tr>
                 `;
@@ -821,9 +1071,7 @@
         function renderScorers(scorersObj) {
             const tbody = document.getElementById('scorers-body');
             tbody.innerHTML = '';
-            
-            let arr = Object.keys(scorersObj).map(k => ({ name: k, goals: scorersObj[k] }));
-            arr.sort((a, b) => b.goals - a.goals);
+            let arr = Object.keys(scorersObj).map(k => ({ name: k, goals: scorersObj[k] })).sort((a, b) => b.goals - a.goals);
 
             if (arr.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#888;">No goals logged yet</td></tr>`;
@@ -831,27 +1079,68 @@
             }
 
             arr.forEach(p => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${p.name}</td>
-                        <td><b>${p.goals}</b></td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td>${p.name}</td><td><b>${p.goals}</b></td></tr>`;
             });
         }
 
+        // ==================== SHARING HELPERS ==================== //
+
+        function copySpectatorLink() {
+            const origin = window.location.origin === "null" || !window.location.origin ? "" : window.location.origin;
+            const shareUrl = `${origin}${window.location.pathname}?room=${roomId}&view=spectator`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showToast("Spectator Link copied! Share with fans/players.");
+            }).catch(() => {
+                prompt("Copy this read-only link:", shareUrl);
+            });
+        }
+
+        function copyAdminLink() {
+            const origin = window.location.origin === "null" || !window.location.origin ? "" : window.location.origin;
+            const shareUrl = `${origin}${window.location.pathname}?room=${roomId}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showToast("Referee / Admin Link copied!");
+            }).catch(() => {
+                prompt("Copy this admin link:", shareUrl);
+            });
+        }
+
+        function copyWhatsAppSummary() {
+            let text = `⚽ *SLFC 3s Intra Tournament Scorecard* ⚽\n\n📊 *LEAGUE STANDINGS:*\n`;
+            currentStandings.forEach((t, i) => {
+                text += `${i + 1}. *${t.name}* | P:${t.p} W:${t.w} D:${t.d} L:${t.l} | GD:${t.gd > 0 ? '+'+t.gd : t.gd} | *Pts:${t.pts}*\n`;
+            });
+            text += `\n👥 *ROSTERS:*\n`;
+            teams.forEach(t => {
+                text += `• *${t.name}*: ${t.players.join(', ')}\n`;
+            });
+            text += `\n🎯 *MATCH RESULTS:*\n`;
+            fixtures.forEach((f) => {
+                if (f.played) {
+                    text += `• Match #${f.id}: ${teams[f.t1].name} ${f.s1} - ${f.s2} ${teams[f.t2].name}${f.scorersText ? ` (${f.scorersText})` : ''}\n`;
+                } else {
+                    text += `• Match #${f.id}: ${teams[f.t1].name} vs ${teams[f.t2].name} (Upcoming)\n`;
+                }
+            });
+            if (finalMatch.played) {
+                text += `\n🥇 *FINAL:* ${teams[finalMatch.t1].name} ${finalMatch.s1} - ${finalMatch.s2} ${teams[finalMatch.t2].name}\n🏆 *CHAMPIONS:* ${finalMatch.winner}\n`;
+            }
+            navigator.clipboard.writeText(text).then(() => showToast("WhatsApp summary copied to clipboard!"));
+        }
+
         function clearAllData() {
-            if (confirm("Reset all 10 group matches, finals data, and standings?")) {
+            if (confirm("Reset all 10 group matches, finals data, and standings for EVERYONE?")) {
                 localStorage.clear();
                 teams = [...DEFAULT_TEAMS];
                 finalMatch = { t1: 0, t2: 1, s1: 0, s2: 0, scorersText: "", note: "", played: false, winner: "" };
-                generateDefault10Fixtures();
+                generateCustom10Fixtures();
+                pushCloudUpdate();
                 initUI();
             }
         }
 
         // Run on startup
-        loadData();
+        loadInitialData();
         initUI();
     </script>
 </body>
